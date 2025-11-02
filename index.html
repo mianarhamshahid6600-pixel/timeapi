@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🌍 Time Generator</title>
+  <style>
+    body {
+      background: #f0f4f8;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #0078ff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005fcc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🕒 Time Generator</h1>
+
+    <label>Country Name (Required):</label>
+    <input type="text" id="country" placeholder="e.g. Pakistan" required>
+
+    <label>Timezone (Required):</label>
+    <input type="text" id="timezone" placeholder="e.g. Asia/Karachi" required>
+
+    <button id="generateBtn">Generate Response</button>
+  </div>
+
+  <script>
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+      const country = document.getElementById('country').value.trim();
+      const timezone = document.getElementById('timezone').value.trim();
+
+      if (!country || !timezone) {
+        alert('⚠️ Please fill all required fields!');
+        return;
+      }
+
+      try {
+        // Fetch time data from public API
+        const res = await fetch(`https://worldtimeapi.org/api/timezone/${timezone}`);
+        if (!res.ok) throw new Error('Invalid timezone or unable to fetch data.');
+        const data = await res.json();
+
+        const formattedData = {
+          country: country,
+          timezone: data.timezone,
+          current_time: data.datetime,
+          utc_offset: data.utc_offset,
+          day_of_week: data.day_of_week,
+          source: "worldtimeapi.org"
+        };
+
+        // Open new tab and display JSON response
+        const newTab = window.open('', '_blank');
+        newTab.document.write(`
+          <html>
+            <head>
+              <title>Time Response</title>
+              <style>
+                body { font-family: monospace; background: #f9fafb; padding: 20px; }
+                pre { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+                h2 { color: #0078ff; }
+              </style>
+            </head>
+            <body>
+              <h2>✅ Time Data for ${country}</h2>
+              <pre>${JSON.stringify(formattedData, null, 2)}</pre>
+            </body>
+          </html>
+        `);
+      } catch (err) {
+        alert('❌ Error: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
