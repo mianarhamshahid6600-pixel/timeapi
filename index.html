@@ -5,7 +5,7 @@
   <title>🌍 Time Generator</title>
   <style>
     body {
-      background: #f0f4f8;
+      background: #eef2f7;
       font-family: 'Poppins', sans-serif;
       display: flex;
       justify-content: center;
@@ -16,19 +16,31 @@
 
     .container {
       background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      width: 350px;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 360px;
       text-align: center;
+    }
+
+    h1 {
+      color: #0078ff;
+    }
+
+    label {
+      font-weight: 500;
+      display: block;
+      text-align: left;
+      margin-top: 10px;
     }
 
     input, button {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
+      margin-top: 8px;
       border: 1px solid #ccc;
       border-radius: 6px;
+      font-size: 14px;
     }
 
     button {
@@ -36,6 +48,8 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
+      margin-top: 15px;
+      transition: 0.2s;
     }
 
     button:hover {
@@ -46,7 +60,6 @@
 <body>
   <div class="container">
     <h1>🕒 Time Generator</h1>
-
     <label>Country Name (Required):</label>
     <input type="text" id="country" placeholder="e.g. Pakistan" required>
 
@@ -67,18 +80,19 @@
       }
 
       try {
-        // Fetch time data from public API
-        const res = await fetch(`https://worldtimeapi.org/api/timezone/${timezone}`);
+        // Using TimeAPI.io (it supports direct browser calls)
+        const apiUrl = `https://timeapi.io/api/TimeZone/zone?timeZone=${timezone}`;
+        const res = await fetch(apiUrl);
         if (!res.ok) throw new Error('Invalid timezone or unable to fetch data.');
         const data = await res.json();
 
         const formattedData = {
           country: country,
-          timezone: data.timezone,
-          current_time: data.datetime,
-          utc_offset: data.utc_offset,
-          day_of_week: data.day_of_week,
-          source: "worldtimeapi.org"
+          timezone: data.timeZone,
+          current_time: data.currentLocalTime,
+          utc_offset: data.standardUtcOffset,
+          abbreviation: data.abbreviation,
+          source: "timeapi.io"
         };
 
         // Open new tab and display JSON response
